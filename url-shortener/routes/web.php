@@ -17,7 +17,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'show'])->name('dashboard');
     Route::resource('urls', UrlController::class)->only(['index', 'create', 'store']);
     Route::resource('invitations', InvitationController::class)->only(['index', 'create', 'store']);
-    Route::get('/s/{slug}', [ShortUrlController::class, 'show'])->name('short-url.show');
 });
 
 Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
+
+Route::get('/s/{slug}', [ShortUrlController::class, 'show'])->name('short-url.show');

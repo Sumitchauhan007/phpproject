@@ -1,30 +1,56 @@
-## URL Shortener Assessment
+## URL Shortener
 
-This project implements a multi-tenant URL shortener built with Laravel 12 and SQLite. The assignment constraints listed in the prompt are all enforced: a single company namespace, role-based permissions, invitation rules, private short links, and the requested test coverage.
+Multi-tenant URL shortener built with Laravel 12, SQLite, and Vite-powered React views. The app supports multiple companies, role-based permissions, invitation flows, and public short-link redirects. Feature tests cover every business rule in the specification.
 
 ### Requirements
 
-- PHP 8.2+
+- PHP 8.2 or newer
 - Composer
-- SQLite (already bundled with PHP)
+- Node.js 18+ and npm (for the Vite frontend)
+- SQLite (bundled with PHP)
 
-### Getting Started
+### Quick Start
+
+Clone the repository and install dependencies:
 
 ```bash
+git clone https://github.com/Sumitchauhan007/phpproject.git
+cd phpproject/url-shortener
 composer install --ignore-platform-req=ext-fileinfo
+npm install
+```
+
+Prepare the environment and database:
+
+```bash
 cp .env.example .env
-# create the SQLite database file if it does not exist yet
-php -r "touch('database/database.sqlite');"
+php -r "file_exists('database/database.sqlite') || touch('database/database.sqlite');"
 php artisan key:generate
-php artisan migrate
+php artisan migrate --force
 php artisan db:seed
+```
+
+Build assets or run the dev server:
+
+- Development (hot reload): `npm run dev`
+- Production build: `npm run build`
+
+Run the Laravel HTTP server (in a separate terminal):
+
+```bash
 php artisan serve
 ```
 
-The Super Admin account seeded by `Database\Seeders\SuperAdminSeeder`:
+Visit http://127.0.0.1:8000 and log in with a seeded account.
 
-- Email: `superadmin@example.com`
-- Password: `password`
+### Seeded Accounts
+
+- Super Admin: `superadmin@example.com` / `password`
+- Admin: `admin@example.com` / `password`
+- Sales: `sales@example.com` / `password`
+- Member: `member@example.com` / `password`
+
+The seeder also creates a secondary company (`Globex Labs`) and a pending member invitation (`new.member@globexlabs.example`).
 
 ### Running Tests
 
@@ -32,16 +58,31 @@ The Super Admin account seeded by `Database\Seeders\SuperAdminSeeder`:
 php artisan test
 ```
 
-Feature tests cover URL creation permissions, visibility rules for each role, and private redirect behaviour.
+This suite verifies:
+
+- Admin and Member short URL creation
+- Super Admin cannot create short URLs
+- Per-role URL listing scopes
+- Public short-link redirects
+- Invitation permissions for Super Admin and Admin roles
 
 ### Architecture Notes
 
-- Roles are defined in `app/Enums/Role.php`.
-- `UrlController` enforces creation restrictions and listing scopes per role.
-- `ShortUrlController` only resolves links for authenticated users who satisfy the role rules; anonymous traffic is redirected to `/login`.
-- `DashboardController` renders a simple HTML dashboard tailored to the user's role.
-- SQLite is used by default; switch to MySQL by updating the `DB_*` values in `.env`.
+- Roles live in `app/Enums/Role.php` and gate controller policies.
+- `UrlController` scopes listings per role and company.
+- `ShortUrlController` resolves slugs publicly while tracking visits.
+- Multi-company data separation uses `company_id` on `urls`, `users`, and `invitations`.
+- Switch to MySQL by updating `.env` and migrating the schema (`php artisan migrate`).
 
-### Acceptable AI Usage Disclosure
+### Useful Composer Scripts
 
-This solution was authored with personal reasoning and implementation effort. GPT-5-Codex (Preview) was used for syntax recall and refactoring suggestions while developing controllers, tests, and documentation.
+- `composer run setup` – end-to-end environment bootstrap
+- `composer run dev` – launch local dev stack (Laravel, queue listener, logs, Vite)
+- `composer run test` – clear config cache and execute the test suite
+
+### License
+
+MIT
+
+
+

@@ -15,14 +15,14 @@ class UrlController extends Controller
     {
         $user = $request->user();
 
-        abort_if($user->isSuperAdmin(), 403, 'Super admins cannot browse short URLs.');
-
         $query = Url::query()->with(['creator', 'company']);
 
-        if ($user->isAdmin()) {
-            $query->where('company_id', '!=', $user->company_id);
+        if ($user->isSuperAdmin()) {
+            // Super admins can browse every short URL across companies.
+        } elseif ($user->isAdmin()) {
+            $query->where('company_id', $user->company_id);
         } elseif ($user->isMember()) {
-            $query->where('user_id', '!=', $user->id);
+            $query->where('user_id', $user->id);
         } else {
             $query->where('company_id', $user->company_id);
         }

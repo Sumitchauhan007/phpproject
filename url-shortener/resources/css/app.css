@@ -9,3 +9,87 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+@layer base {
+    html {
+        @apply h-full;
+    }
+
+    body {
+        @apply min-h-full bg-slate-100 font-sans text-slate-900 antialiased;
+    }
+
+    a {
+        @apply text-indigo-600 transition hover:text-indigo-500;
+    }
+}
+
+@layer components {
+    .card {
+        @apply rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm backdrop-blur;
+    }
+
+    .card-tight {
+        @apply rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm backdrop-blur;
+    }
+
+    .btn-primary {
+        @apply inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 hover:bg-indigo-500;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600;
+    }
+
+    .form-label {
+        @apply text-sm font-medium text-slate-700;
+    }
+
+    .form-control {
+        @apply mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/70 focus:ring-offset-0;
+    }
+
+    .form-helper {
+        @apply text-sm text-slate-500;
+    }
+
+    .table-wrapper {
+        @apply overflow-hidden rounded-2xl border border-slate-200 bg-white/90 shadow-sm backdrop-blur;
+    }
+
+    .data-table {
+        @apply min-w-full divide-y divide-slate-200;
+    }
+
+    .data-table thead {
+        @apply bg-slate-50;
+    }
+
+    .data-table th {
+        @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600;
+    }
+
+    .data-table tbody tr:nth-child(odd) {
+        @apply bg-white;
+    }
+
+    .data-table tbody tr:nth-child(even) {
+        @apply bg-slate-50/60;
+    }
+
+    .data-table td {
+        @apply px-4 py-3 text-sm text-slate-700;
+    }
+
+    .badge {
+        @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    }
+
+    .badge-success {
+        @apply bg-emerald-100 text-emerald-700;
+    }
+
+    .badge-pending {
+        @apply bg-amber-100 text-amber-700;
+    }
+}

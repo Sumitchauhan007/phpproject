@@ -29,42 +29,47 @@ class InvitationRulesTest extends TestCase
         $response->assertSessionHasErrors('company_id');
     }
 
-    public function test_admin_cannot_invite_admin_or_member(): void
+    public function test_admin_can_invite_admin_or_member_in_their_company(): void
     {
         $company = Company::factory()->create();
         $admin = User::factory()->for($company)->admin()->create();
 
         $this->actingAs($admin)
-            ->from(route('invitations.create'))
             ->post(route('invitations.store'), [
                 'email' => 'another-admin@example.com',
                 'role' => Role::ADMIN,
             ])
-            ->assertRedirect(route('invitations.create'))
-            ->assertSessionHasErrors('role');
+            ->assertRedirect(route('invitations.index'))
+            ->assertSessionHasNoErrors();
 
         $this->actingAs($admin)
-            ->from(route('invitations.create'))
             ->post(route('invitations.store'), [
                 'email' => 'member@example.com',
                 'role' => Role::MEMBER,
-            ])
-            ->assertRedirect(route('invitations.create'))
-            ->assertSessionHasErrors('role');
-
-        $this->actingAs($admin)
-            ->post(route('invitations.store'), [
-                'email' => 'sales@example.com',
-                'role' => Role::SALES,
             ])
             ->assertRedirect(route('invitations.index'))
             ->assertSessionHasNoErrors();
 
         $this->assertDatabaseHas('invitations', [
-            'email' => 'sales@example.com',
-            'role' => Role::SALES,
+            'email' => 'another-admin@example.com',
+            'role' => Role::ADMIN,
             'company_id' => $company->id,
         ]);
+
+        $this->assertDatabaseHas('invitations', [
+            'email' => 'member@example.com',
+            'role' => Role::MEMBER,
+            'company_id' => $company->id,
+        ]);
+
+        $this->actingAs($admin)
+            ->from(route('invitations.create'))
+            ->post(route('invitations.store'), [
+                'email' => 'super-admin@example.com',
+                'role' => Role::SUPER_ADMIN,
+            ])
+            ->assertRedirect(route('invitations.create'))
+            ->assertSessionHasErrors('role');
     }
 
     public function test_non_admin_cannot_access_invitation_form(): void

@@ -35,10 +35,9 @@ class InvitationController extends Controller
 
         abort_unless($user->isSuperAdmin() || $user->isAdmin(), 403);
 
-        $roles = Role::all();
-        if ($user->isAdmin()) {
-            $roles = array_values(array_filter($roles, fn (string $role) => $role !== Role::SUPER_ADMIN));
-        }
+        $roles = $user->isSuperAdmin()
+            ? [Role::ADMIN, Role::SUPER_ADMIN]
+            : [Role::ADMIN, Role::MEMBER];
 
         return view('invitations.create', [
             'roles' => $roles,
@@ -53,11 +52,13 @@ class InvitationController extends Controller
 
         abort_unless($user->isSuperAdmin() || $user->isAdmin(), 403);
 
-        $roles = Role::all();
+        $allowedRoles = $user->isSuperAdmin()
+            ? [Role::ADMIN, Role::SUPER_ADMIN]
+            : [Role::ADMIN, Role::MEMBER];
 
         $rules = [
             'email' => ['required', 'email'],
-            'role' => ['required', Rule::in($roles)],
+            'role' => ['required', Rule::in($allowedRoles)],
             'company_id' => ['nullable', 'exists:companies,id'],
         ];
 
@@ -68,24 +69,16 @@ class InvitationController extends Controller
         $data = $request->validate($rules);
 
         if ($user->isAdmin()) {
-            if (in_array($data['role'], [Role::ADMIN, Role::MEMBER], true)) {
-                return back()->withErrors([
-                    'role' => 'Admins may only invite Sales or Manager roles.',
-                ])->withInput();
-            }
-
             $data['company_id'] = $user->company_id;
         }
 
         if ($user->isSuperAdmin()) {
             if ($data['role'] === Role::SUPER_ADMIN) {
                 $data['company_id'] = null;
-            } else {
-                if (empty($data['company_id'])) {
-                    return back()->withErrors([
-                        'company_id' => 'Please choose a company for this invitation.',
-                    ])->withInput();
-                }
+            } elseif (empty($data['company_id'])) {
+                return back()->withErrors([
+                    'company_id' => 'Please choose a company for this invitation.',
+                ])->withInput();
             }
         }
 

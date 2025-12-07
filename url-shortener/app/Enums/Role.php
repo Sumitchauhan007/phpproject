@@ -29,6 +29,11 @@ class Role
      */
     public static function canCreateShortUrls(): array
     {
-        return [self::SALES, self::MANAGER];
+        return [
+            self::ADMIN,
+            self::MEMBER,
+            self::SALES,
+            self::MANAGER,
+        ];
     }
 }

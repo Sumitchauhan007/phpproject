@@ -24,14 +24,14 @@ class DashboardController extends Controller
         } elseif ($user->isAdmin()) {
             $urls = Url::query()
                 ->with(['company', 'creator'])
-                ->where('company_id', '!=', $user->company_id)
+                ->where('company_id', $user->company_id)
                 ->latest()
                 ->limit(10)
                 ->get();
         } elseif ($user->isMember()) {
             $urls = Url::query()
                 ->with(['company', 'creator'])
-                ->where('user_id', '!=', $user->id)
+                ->where('user_id', $user->id)
                 ->latest()
                 ->limit(10)
                 ->get();

@@ -1,32 +1,19 @@
 @extends('layouts.app')
 
 @section('content')
-<h1>Short URLs</h1>
-@if(auth()->user()->canCreateUrls())
-    <a href="{{ route('urls.create') }}">Create Short URL</a>
-@endif
-<table border="1" cellpadding="4">
-    <thead>
-        <tr>
-            <th>Slug</th>
-            <th>Destination</th>
-            <th>Company</th>
-            <th>Creator</th>
-        </tr>
-    </thead>
-    <tbody>
-    @forelse($urls as $url)
-        <tr>
-            <td>{{ $url->slug }}</td>
-            <td>{{ $url->destination }}</td>
-            <td>{{ optional($url->company)->name }}</td>
-            <td>{{ optional($url->creator)->name }}</td>
-        </tr>
-    @empty
-        <tr>
-            <td colspan="4">No short URLs found.</td>
-        </tr>
-    @endforelse
-    </tbody>
-</table>
+@php
+    $props = [
+        'canCreate' => auth()->user()->canCreateUrls(),
+        'createUrl' => route('urls.create'),
+        'urls' => $urls->map(fn ($url) => [
+            'id' => $url->id,
+            'slug' => $url->slug,
+            'destination' => $url->destination,
+            'company' => optional($url->company)->name,
+            'creator' => optional($url->creator)->name,
+        ])->values(),
+    ];
+@endphp
+
+<div data-component="UrlsIndex" data-props='@json($props)'></div>
 @endsection
