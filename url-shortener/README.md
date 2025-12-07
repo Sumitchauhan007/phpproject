@@ -1,6 +1,6 @@
 ## URL Shortener
 
-Multi-tenant URL shortener built with Laravel 12, SQLite, and Vite-powered React views. The app supports multiple companies, role-based permissions, invitation flows, and public short-link redirects. Feature tests cover every business rule in the specification.
+Multi-tenant URL shortener built with Laravel 12, SQLite, and Vite-powered React views. The app supports multiple companies, role-based permissions, invitation flows, and public short-link redirects. 
 
 ### Requirements
 
