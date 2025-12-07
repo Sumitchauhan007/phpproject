@@ -80,6 +80,16 @@ This suite verifies:
 - `composer run dev` – launch local dev stack (Laravel, queue listener, logs, Vite)
 - `composer run test` – clear config cache and execute the test suite
 
+  AI Tools Used
+
+During the development of this Laravel-based multi-tenant URL Shortener project, several AI tools were used to improve productivity, code quality, and understanding of framework structure:
+
+GitHub Copilot / Copilot Chat (GPT-5.1)
+Used as an in-editor assistant to generate initial validation logic, refine controllers, suggest Laravel best practices, and fix structural or syntax issues. It also helped in improving code readability and optimizing certain functions.
+
+ChatGPT (GPT-5.1)
+Used to understand the Laravel file and folder structure more clearly, validate architectural decisions, clarify policy and role-based permission flows, and assist in debugging migration/validation issues. It also helped refine the README, documentation, and overall implementation approach.
+
 ### License
 
 MIT
