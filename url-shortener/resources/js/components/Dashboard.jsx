@@ -14,34 +14,63 @@ const EmptyState = ({ colSpan, message }) => (
     </tr>
 );
 
-const UrlTable = ({ urls, emptyMessage }) => (
-    <div className="table-wrapper">
-        <table className="data-table">
-            <thead>
-                <tr>
-                    <th scope="col">Slug</th>
-                    <th scope="col">Destination</th>
-                    <th scope="col">Company</th>
-                    <th scope="col">Creator</th>
-                </tr>
-            </thead>
-            <tbody>
-                {urls.length === 0 ? (
-                    <EmptyState colSpan={4} message={emptyMessage} />
-                ) : (
-                    urls.map((url, index) => (
-                        <tr key={url.id} className={index % 2 === 0 ? undefined : 'bg-slate-50/60'}>
-                            <td className="font-medium text-slate-900">{url.slug}</td>
-                            <td className="break-words text-slate-600">{url.destination}</td>
-                            <td>{url.company ?? '—'}</td>
-                            <td>{url.creator ?? '—'}</td>
-                        </tr>
-                    ))
-                )}
-            </tbody>
-        </table>
-    </div>
-);
+const UrlTable = ({ urls, emptyMessage }) => {
+    const appOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+
+    const resolveShortUrl = (url) => {
+        if (url.shortUrl) {
+            return url.shortUrl;
+        }
+
+        if (appOrigin) {
+            return `${appOrigin}/s/${url.slug}`;
+        }
+
+        return `/s/${url.slug}`;
+    };
+
+    return (
+        <div className="table-wrapper">
+            <table className="data-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Short URL</th>
+                        <th scope="col">Destination</th>
+                        <th scope="col">Company</th>
+                        <th scope="col">Creator</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {urls.length === 0 ? (
+                        <EmptyState colSpan={4} message={emptyMessage} />
+                    ) : (
+                        urls.map((url, index) => {
+                            const shortUrl = resolveShortUrl(url);
+
+                            return (
+                                <tr key={url.id} className={index % 2 === 0 ? undefined : 'bg-slate-50/60'}>
+                                    <td className="font-medium text-slate-900">
+                                        <a
+                                            href={shortUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-indigo-600 hover:text-indigo-700"
+                                        >
+                                            {shortUrl}
+                                        </a>
+                                    </td>
+                                    <td className="break-words text-slate-600">{url.destination}</td>
+                                    <td>{url.company ?? '—'}</td>
+                                    <td>{url.creator ?? '—'}</td>
+                                </tr>
+                            );
+                        })
+                    )}
+                </tbody>
+            </table>
+        </div>
+    );
+};
 
 export default function Dashboard({ user, companies = [], urls = [] }) {
     const title = humanize(user.role);

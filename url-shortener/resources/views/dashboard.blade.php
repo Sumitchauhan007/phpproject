@@ -15,6 +15,7 @@
         'urls' => $urls->map(fn ($url) => [
             'id' => $url->id,
             'slug' => $url->slug,
+            'shortUrl' => url("/s/{$url->slug}"),
             'destination' => $url->destination,
             'company' => optional($url->company)->name,
             'creator' => optional($url->creator)->name,

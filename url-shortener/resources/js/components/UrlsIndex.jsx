@@ -4,6 +4,18 @@ export default function UrlsIndex({ urls = [], canCreate = false, createUrl }) {
     const hasUrls = urls.length > 0;
     const appOrigin = typeof window !== 'undefined' ? window.location.origin : '';
 
+    const resolveShortUrl = (url) => {
+        if (url.shortUrl) {
+            return url.shortUrl;
+        }
+
+        if (appOrigin) {
+            return `${appOrigin}/s/${url.slug}`;
+        }
+
+        return `/s/${url.slug}`;
+    };
+
     return (
         <section className="space-y-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -36,23 +48,27 @@ export default function UrlsIndex({ urls = [], canCreate = false, createUrl }) {
                                 </td>
                             </tr>
                         ) : (
-                            urls.map((url, index) => (
-                                <tr key={url.id} className={index % 2 === 0 ? undefined : 'bg-slate-50/60'}>
+                            urls.map((url, index) => {
+                                const shortUrl = resolveShortUrl(url);
+
+                                return (
+                                    <tr key={url.id} className={index % 2 === 0 ? undefined : 'bg-slate-50/60'}>
                                     <td className="font-medium text-slate-900">
                                         <a
-                                            href={`${appOrigin}/s/${url.slug}`}
+                                            href={shortUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="text-indigo-600 hover:text-indigo-700"
                                         >
-                                            {appOrigin ? `${appOrigin}/s/${url.slug}` : `/s/${url.slug}`}
+                                            {shortUrl}
                                         </a>
                                     </td>
                                     <td className="break-words text-slate-600">{url.destination}</td>
                                     <td>{url.company ?? '—'}</td>
                                     <td>{url.creator ?? '—'}</td>
-                                </tr>
-                            ))
+                                    </tr>
+                                );
+                            })
                         )}
                     </tbody>
                 </table>

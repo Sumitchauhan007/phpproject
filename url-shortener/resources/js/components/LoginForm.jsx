@@ -11,7 +11,13 @@ export default function LoginForm({ action, csrfToken, email = '', remember = fa
                         Access analytics, manage short links, and collaborate with your team. 
                     </p>
                     <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 text-sm text-indigo-700">
-                        Tip: The demo accounts use the password <span className="font-semibold">password</span>.
+                        <p className="font-semibold text-indigo-800">Tip: Demo login credentials</p>
+                        <ul className="mt-2 space-y-1">
+                            <li>Super Admin: <span className="font-medium">superadmin@example.com / password</span></li>
+                            <li>Admin: <span className="font-medium">admin@example.com / password</span></li>
+                            <li>Sales: <span className="font-medium">sales@example.com / password</span></li>
+                            <li>Member: <span className="font-medium">member@example.com / password</span></li>
+                        </ul>
                     </div>
                 </div>
 
